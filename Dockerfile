@@ -21,9 +21,10 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $PATH:$JAVA_HOME/bin
 
 # download hadoop
-RUN wget http://www-us.apache.org/dist/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz
-RUN tar -xzf hadoop-3.1.0.tar.gz -C /usr/local
-RUN mv /usr/local/hadoop-3.1.0 /usr/local/hadoop
+RUN wget -O hadoop.tar.gz http://www-us.apache.org/dist/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz
+RUN tar -C /usr/local -xzf hadoop.tar.gz;\
+    rm -f hadoop-3.1.0.tar.gz;\
+    mv /usr/local/hadoop-3.1.0 /usr/local/hadoop
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV HADOOP_CONF_DIR /usr/local/hadoop/etc/hadoop
@@ -57,6 +58,10 @@ RUN make install
 RUN ldconfig
 RUN protoc -h
 
+# clean
+WORKDIR /
+RUN rm -rf protobuf
+
 # clone libhdfs3 then build
 RUN git clone https://github.com/Pivotal-Data-Attic/attic-c-hdfs-client
 
@@ -69,6 +74,9 @@ RUN make install
 # copy lib & include to /usr/local
 RUN cp -R ../dist/lib/ /usr/lib/
 RUN cp -R ../dist/include /usr/include/
+
+# clean
+RUN rm -rf attic-c-hdfs-client
 
 # install golang
 RUN wget -O go.tgz https://dl.google.com/go/go1.10.1.linux-amd64.tar.gz
