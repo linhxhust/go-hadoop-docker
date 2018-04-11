@@ -72,8 +72,8 @@ RUN make
 RUN make install
 
 # copy lib & include to /usr/local
-RUN cp -R ../dist/lib/ /usr/lib/
-RUN cp -R ../dist/include /usr/include/
+RUN cp -R ../dist/lib/* /usr/local/lib/
+RUN cp -R ../dist/include/* /usr/local/include/
 
 # clean
 RUN rm -rf attic-c-hdfs-client
